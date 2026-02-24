@@ -1,0 +1,10 @@
+{
+  "display_name": "Scenario State Tracker",
+  "version": "1.0.0",
+  "description": "Gist-backed NPC and world state injection for any roleplay scenario. Auto-selects relevant NPCs per scene. Surfaces detected state changes for approve/deny before writing to Gist. Configurable extraction prompt for any setting.",
+  "author": "LO",
+  "homePage": "",
+  "requires_extras": [],
+  "js": "index.js",
+  "css": "style.css"
+}
