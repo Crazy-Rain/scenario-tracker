@@ -1,0 +1,661 @@
+/* ── Worm State Tracker v0.4.0 — mobile-aware styles ──────── */
+
+#worm_tracker_panel {
+  margin-top: 8px;
+  font-size: 0.9em;
+  /* Ensure the expanding panel isn't clipped by its container */
+  position: relative;
+  z-index: 1;
+}
+
+/* ST's inline-drawer-content needs to be able to grow freely */
+#worm_tracker_panel .inline-drawer-content {
+  overflow: visible !important;
+  position: relative;
+  z-index: 10;
+}
+
+/* The outer drawer wrapper too */
+#worm_tracker_panel .inline-drawer {
+  overflow: visible !important;
+  position: relative;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.wt-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wt-badge {
+  display: inline-block;
+  background: #e8a020;
+  color: #111;
+  border-radius: 10px;
+  font-size: 0.72em;
+  font-weight: 700;
+  min-width: 18px;
+  text-align: center;
+  padding: 1px 5px;
+  line-height: 1.4;
+  vertical-align: middle;
+  margin-left: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Config section ─────────────────────────────────────────── */
+.wt-section {
+  padding: 6px 0 2px;
+}
+
+.wt-row {
+  margin-bottom: 8px;
+}
+
+.wt-label {
+  font-size: 0.78em;
+  opacity: 0.6;
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* 16px minimum prevents iOS Safari auto-zoom on input focus */
+.wt-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: monospace;
+  font-size: 16px;
+  padding: 6px 8px;
+  background: var(--black60a);
+  border: 1px solid var(--white20a);
+  border-radius: 6px;
+  color: var(--white80a);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.wt-input:focus {
+  outline: 2px solid var(--active-element-hover-color, #9b59b6);
+  outline-offset: 1px;
+}
+
+/* ── Button base — 44px min touch target ────────────────────── */
+.wt-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.wt-btn {
+  font-size: 0.85em !important;
+  padding: 0 12px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  min-width: 44px !important;
+  line-height: 1 !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.wt-btn-accept {
+  background: rgba(60, 160, 80, 0.25) !important;
+  border-color: rgba(60, 160, 80, 0.5) !important;
+  color: #8edd9a !important;
+}
+.wt-btn-accept:active,
+.wt-btn-accept:hover {
+  background: rgba(60, 160, 80, 0.45) !important;
+}
+
+.wt-btn-deny {
+  background: rgba(200, 50, 50, 0.2) !important;
+  border-color: rgba(200, 50, 50, 0.45) !important;
+  color: #e88a8a !important;
+}
+.wt-btn-deny:active,
+.wt-btn-deny:hover {
+  background: rgba(200, 50, 50, 0.38) !important;
+}
+
+.wt-btn-neutral {
+  background: rgba(100, 100, 120, 0.2) !important;
+  border-color: rgba(150, 150, 180, 0.35) !important;
+  color: var(--white70a, rgba(255,255,255,0.7)) !important;
+}
+.wt-btn-neutral:active,
+.wt-btn-neutral:hover {
+  background: rgba(100, 100, 120, 0.38) !important;
+}
+
+/* ── Divider ─────────────────────────────────────────────────── */
+.wt-divider {
+  border: none;
+  border-top: 1px solid var(--white10a, rgba(255,255,255,0.1));
+  margin: 10px 0;
+}
+
+/* ── Status + summary ────────────────────────────────────────── */
+.wt-status {
+  font-size: 0.78em;
+  font-style: italic;
+  opacity: 0.55;
+  padding: 2px 0;
+  line-height: 1.4;
+}
+
+.wt-summary {
+  font-size: 0.82em;
+  line-height: 1.8;
+  color: var(--white70a, rgba(255,255,255,0.7));
+  margin-top: 4px;
+}
+
+/* ── Import section ─────────────────────────────────────────── */
+.wt-import-section {
+  padding: 2px 0 4px;
+}
+
+.wt-import-hint {
+  font-size: 0.74em;
+  opacity: 0.48;
+  margin-top: 5px;
+  line-height: 1.45;
+}
+
+#wt_file_input {
+  display: none;
+}
+
+/* ── Queue header ────────────────────────────────────────────── */
+.wt-queue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.82em;
+  font-weight: 600;
+  padding: 4px 0;
+  color: #e8a020;
+}
+
+.wt-queue-bulk {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+/* ── Queue list ─────────────────────────────────────────────── */
+.wt-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  /* Capped height so it doesn't push content off-screen.
+     Scroll is inside this element, not the drawer. */
+  max-height: 35vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 2px;
+}
+
+.wt-queue::-webkit-scrollbar        { width: 4px; }
+.wt-queue::-webkit-scrollbar-track  { background: transparent; }
+.wt-queue::-webkit-scrollbar-thumb  { background: var(--white20a, rgba(255,255,255,0.2)); border-radius: 4px; }
+
+/* ── Queue card — standard ──────────────────────────────────── */
+.wt-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--black40a, rgba(0,0,0,0.3));
+  border: 1px solid var(--white10a, rgba(255,255,255,0.1));
+  transition: background 0.1s;
+  min-width: 0;
+}
+
+.wt-card:active { background: var(--black50a, rgba(0,0,0,0.4)); }
+
+.wt-card-icon {
+  font-size: 1em;
+  margin-top: 2px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.wt-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.wt-card-desc {
+  font-size: 0.82em;
+  line-height: 1.45;
+  word-break: break-word;
+  color: var(--white90a, rgba(255,255,255,0.9));
+}
+
+.wt-card-old {
+  font-size: 0.73em;
+  opacity: 0.42;
+  margin-top: 3px;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wt-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.wt-card-actions .wt-btn {
+  padding: 0 8px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  font-size: 0.82em !important;
+}
+
+/* ── Import card — stacked layout ───────────────────────────── */
+.wt-card--import {
+  flex-direction: column;
+  gap: 0;
+}
+
+.wt-import-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.wt-import-top .wt-card-body {
+  flex: 1;
+}
+
+.wt-preview-toggle {
+  display: inline-block;
+  font-size: 0.74em;
+  opacity: 0.55;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 4px;
+  padding: 3px 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.wt-preview-toggle:active { opacity: 0.9; }
+
+.wt-preview-block {
+  display: none;
+  font-size: 0.74em;
+  line-height: 1.5;
+  color: var(--white60a, rgba(255,255,255,0.6));
+  background: rgba(0,0,0,0.3);
+  border-radius: 5px;
+  padding: 7px 9px;
+  margin-top: 6px;
+  max-height: 160px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: monospace;
+  border: 1px solid var(--white10a, rgba(255,255,255,0.08));
+}
+
+.wt-preview-block.open { display: block; }
+
+.wt-import-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* ── Inline row (label + narrow input side by side) ─────────── */
+.wt-row--inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.wt-row--inline .wt-label {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+/* Narrow number input for Max NPCs */
+.wt-input--narrow {
+  width: 64px !important;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── Secrets section ─────────────────────────────────────────── */
+.wt-secrets-section {
+  padding: 2px 0 4px;
+}
+
+.wt-secrets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.84em;
+  font-weight: 600;
+  padding: 5px 2px;
+  color: var(--white70a, rgba(255,255,255,0.7));
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.wt-secrets-header:active {
+  opacity: 0.75;
+}
+
+.wt-secrets-caret {
+  font-size: 0.78em;
+  opacity: 0.55;
+}
+
+.wt-secrets-hint {
+  font-size: 0.74em;
+  opacity: 0.48;
+  margin-bottom: 7px;
+  line-height: 1.45;
+}
+
+/* ── Secret rows ─────────────────────────────────────────────── */
+.wt-secrets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wt-secrets-list::-webkit-scrollbar        { width: 4px; }
+.wt-secrets-list::-webkit-scrollbar-track  { background: transparent; }
+.wt-secrets-list::-webkit-scrollbar-thumb  { background: var(--white20a, rgba(255,255,255,0.2)); border-radius: 4px; }
+
+.wt-secret-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: var(--black30a, rgba(0,0,0,0.2));
+  min-height: 36px;
+}
+
+.wt-secret-toggle {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 5px;
+  font-size: 0.8em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  border: 1px solid transparent;
+}
+
+.wt-secret-true {
+  background: rgba(60, 160, 80, 0.25) !important;
+  border-color: rgba(60, 160, 80, 0.5) !important;
+  color: #8edd9a !important;
+}
+.wt-secret-true:active { background: rgba(60, 160, 80, 0.45) !important; }
+
+.wt-secret-false {
+  background: rgba(120, 120, 140, 0.2) !important;
+  border-color: rgba(150, 150, 160, 0.35) !important;
+  color: var(--white50a, rgba(255,255,255,0.5)) !important;
+}
+.wt-secret-false:active { background: rgba(120, 120, 140, 0.38) !important; }
+
+.wt-secret-label {
+  flex: 1;
+  font-size: 0.8em;
+  line-height: 1.3;
+  word-break: break-word;
+  color: var(--white80a, rgba(255,255,255,0.8));
+}
+
+.wt-secret-delete {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  border-radius: 5px;
+  font-size: 1em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  background: rgba(200, 50, 50, 0.15) !important;
+  border-color: rgba(200, 50, 50, 0.35) !important;
+  color: #e88a8a !important;
+  line-height: 1;
+}
+.wt-secret-delete:active { background: rgba(200, 50, 50, 0.35) !important; }
+
+.wt-secrets-empty {
+  font-size: 0.78em;
+  opacity: 0.42;
+  font-style: italic;
+  padding: 6px 4px;
+}
+
+/* ── Add-secret row ──────────────────────────────────────────── */
+.wt-secrets-add {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.wt-secrets-add .wt-input {
+  flex: 1;
+  font-size: 14px; /* slightly smaller than 16px is fine here — not a focus-trigger on iOS */
+}
+
+.wt-secrets-add .wt-btn {
+  flex-shrink: 0;
+  height: 36px !important;
+  min-height: 36px !important;
+  white-space: nowrap;
+}
+
+/* ── Mobile adjustments for new elements ────────────────────── */
+@media (max-width: 600px) {
+
+  .wt-input--narrow {
+    width: 72px !important;
+  }
+
+  .wt-secrets-add {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .wt-secrets-add .wt-input,
+  .wt-secrets-add .wt-btn {
+    width: 100% !important;
+    height: 44px !important;
+    font-size: 1em !important;
+  }
+
+  .wt-secret-toggle {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .wt-secret-delete {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .wt-secret-label {
+    font-size: 0.88em;
+  }
+
+  .wt-secrets-list {
+    max-height: 280px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  #worm_tracker_panel { font-size: 1em; }
+
+  .wt-row { margin-bottom: 10px; }
+
+  .wt-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .wt-actions .wt-btn {
+    width: 100% !important;
+    height: 44px !important;
+    font-size: 1em !important;
+  }
+
+  .wt-queue { max-height: 50vh; }
+
+  .wt-card {
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .wt-card-desc {
+    font-size: 0.88em;
+    line-height: 1.5;
+  }
+
+  .wt-card-actions .wt-btn {
+    height: 40px !important;
+    min-height: 40px !important;
+    min-width: 48px !important;
+    font-size: 0.92em !important;
+  }
+
+  .wt-queue-bulk .wt-btn {
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 16px !important;
+  }
+
+  .wt-summary {
+    font-size: 0.9em;
+    line-height: 2;
+  }
+
+  .wt-preview-block { max-height: 200px; }
+
+  .wt-preview-toggle {
+    font-size: 0.82em;
+    padding: 5px 0;
+  }
+
+  .wt-import-actions .wt-btn {
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 16px !important;
+    font-size: 0.92em !important;
+  }
+}
+
+/* ── Very small screens (iPhone SE etc) ─────────────────────── */
+@media (max-width: 375px) {
+
+  .wt-queue { max-height: 40vh; }
+
+  .wt-queue-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .wt-queue-bulk {
+    width: 100%;
+  }
+
+  .wt-queue-bulk .wt-btn { flex: 1; }
+}
+
+/* Rescan section */
+.wt-rescan-section {
+  padding: 6px 0 2px;
+}
+.wt-rescan-section .wt-row--inline {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Scenario config section */
+.sst-config-section { padding: 6px 0 2px; }
+.sst-config-section textarea {
+  width: 100%;
+  min-height: 80px;
+  max-height: 200px;
+  resize: vertical;
+  background: var(--black-tint-5, #1a1a1a);
+  color: var(--white-tint-80, #ccc);
+  border: 1px solid var(--white-tint-30, #444);
+  border-radius: 3px;
+  padding: 6px;
+  font-size: 11px;
+  font-family: monospace;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+.sst-config-section textarea:focus {
+  outline: none;
+  border-color: var(--white-tint-50, #777);
+}
+.sst-config-hint {
+  font-size: 10px;
+  color: var(--white-tint-40, #888);
+  margin: 3px 0 6px;
+  line-height: 1.4;
+}
