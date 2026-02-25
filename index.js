@@ -39,6 +39,7 @@ let isExtracting    = false;
 let isRescanning    = false;
 let rescanAbort     = false;
 let syncTimer       = null;
+let extensionEnabled = localStorage.getItem('sst_enabled') !== 'false';
 
 const worldState  = () => gistFiles['world_state.json']  || {};
 const masterIndex = () => gistFiles['_master_index.json'] || {};
@@ -199,7 +200,18 @@ function injectNpcs() {
   ctx.setExtensionPrompt(`${MODULE}_npcs`, `=== ACTIVE NPCs (${selected.length}) ===\n${rendered}`, 1, 0, false, null);
 }
 
-function rebuildContextInjection() { injectWorldState(); injectNpcs(); }
+function rebuildContextInjection() {
+  const ctx = getContext();
+  if (!extensionEnabled) {
+    if (ctx?.setExtensionPrompt) {
+      ctx.setExtensionPrompt(`${MODULE}_world`, '', 1, 0, false, null);
+      ctx.setExtensionPrompt(`${MODULE}_npcs`,  '', 1, 0, false, null);
+    }
+    return;
+  }
+  injectWorldState();
+  injectNpcs();
+}
 
 // ═══════════════════════════════════════════════════════════════
 // 4. GIST SYNC
@@ -275,6 +287,7 @@ async function onMessageReceived() {
   if (!messages?.length) return;
   const lastMsg = messages[messages.length - 1];
   if (!lastMsg || lastMsg.is_user) return;
+  if (!extensionEnabled) return;
 
   const rawText   = lastMsg.mes || '';
   const cleanText = stripThinkingBlocks(rawText);
@@ -907,6 +920,10 @@ function buildPanel() {
       <div class="inline-drawer-toggle inline-drawer-header wt-header">
         <b>📋 Scenario State Tracker</b>
         <span id="sst_badge" class="wt-badge" style="display:none">0</span>
+        <label class="wt-toggle" id="sst_enabled_toggle" title="Enable / disable tracker" onclick="event.stopPropagation()">
+          <input type="checkbox" id="sst_enabled_cb">
+          <span class="wt-toggle-pill"></span>
+        </label>
         <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
       </div>
 
@@ -1180,6 +1197,17 @@ function buildPanel() {
   panel.querySelector('#sst_accept_all').addEventListener('click', acceptAll);
   panel.querySelector('#sst_deny_all').addEventListener('click', denyAll);
 
+  // Enabled toggle
+  const enabledCb = panel.querySelector('#sst_enabled_cb');
+  if (enabledCb) enabledCb.checked = extensionEnabled;
+  panel.querySelector('#sst_enabled_toggle')?.addEventListener('click', () => {
+    extensionEnabled = !extensionEnabled;
+    localStorage.setItem('sst_enabled', extensionEnabled);
+    enabledCb.checked = extensionEnabled;
+    rebuildContextInjection();
+    updateStatus(extensionEnabled ? 'tracker enabled \u2713' : 'tracker disabled \u2014 injections cleared');
+  });
+
   $('#extensions_settings').append(panel);
 }
 
@@ -1422,6 +1450,9 @@ jQuery(async () => {
   console.log('[ScenarioTracker] Loading v1.0.0\u2026');
   try {
     buildPanel();
+    // Restore enabled toggle state
+    const _ecb = document.getElementById('sst_enabled_cb');
+    if (_ecb) _ecb.checked = extensionEnabled;
     console.log('[ScenarioTracker] Panel appended to #extensions_settings \u2713');
   } catch (err) {
     console.error('[ScenarioTracker] buildPanel() threw — panel will not appear:', err);
