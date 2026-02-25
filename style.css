@@ -1,6 +1,6 @@
 /* ── Worm State Tracker v0.4.0 — mobile-aware styles ──────── */
 
-#worm_tracker_panel {
+#sst_panel {
   margin-top: 8px;
   font-size: 0.9em;
   /* Ensure the expanding panel isn't clipped by its container */
@@ -9,14 +9,14 @@
 }
 
 /* ST's inline-drawer-content needs to be able to grow freely */
-#worm_tracker_panel .inline-drawer-content {
+#sst_panel .inline-drawer-content {
   overflow: visible !important;
   position: relative;
   z-index: 10;
 }
 
 /* The outer drawer wrapper too */
-#worm_tracker_panel .inline-drawer {
+#sst_panel .inline-drawer {
   overflow: visible !important;
   position: relative;
 }
@@ -174,7 +174,7 @@
   line-height: 1.45;
 }
 
-#wt_file_input {
+#sst_file_input {
   display: none;
 }
 
@@ -544,7 +544,7 @@
 
 @media (max-width: 600px) {
 
-  #worm_tracker_panel { font-size: 1em; }
+  #sst_panel { font-size: 1em; }
 
   .wt-row { margin-bottom: 10px; }
 
