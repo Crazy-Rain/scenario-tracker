@@ -1200,10 +1200,11 @@ function buildPanel() {
   // Enabled toggle
   const enabledCb = panel.querySelector('#sst_enabled_cb');
   if (enabledCb) enabledCb.checked = extensionEnabled;
-  panel.querySelector('#sst_enabled_toggle')?.addEventListener('click', () => {
-    extensionEnabled = !extensionEnabled;
+  if (enabledCb) enabledCb.addEventListener('change', (e) => {
+    // Stop the event reaching the drawer-toggle behind the label
+    e.stopPropagation();
+    extensionEnabled = enabledCb.checked;          // browser already flipped it
     localStorage.setItem('sst_enabled', extensionEnabled);
-    enabledCb.checked = extensionEnabled;
     rebuildContextInjection();
     updateStatus(extensionEnabled ? 'tracker enabled \u2713' : 'tracker disabled \u2014 injections cleared');
   });
